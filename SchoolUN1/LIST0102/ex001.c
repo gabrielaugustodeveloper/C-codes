@@ -14,7 +14,7 @@ printf("Soma: %d\n", num1 + num2);
 printf("Subtracao: %d\n", num1 - num2);
 printf("Multiplicacao: %d\n", num1 * num2);
 printf("Divisao: %d\n", num1 / num2);
-printf("Resto da divisao: %d\n", num1 % num2);
+printf("Resto da Divisao: %d\n", num1 % num2);
 
 
 }
