@@ -7,7 +7,7 @@ int main() {
 
     printf("Digite os valores do array:\n");
     for (int i = 0; i < 10; i++) {
-        printf("Enter value %d: ", i + 1);
+        printf("Digite o valor %d: ", i + 1);
         scanf("%d", &arrayA[i]);
         
         if (arrayA[i] % 2 == 0){
