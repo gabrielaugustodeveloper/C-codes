@@ -9,6 +9,9 @@ int main() {
     printf("Enter the value of the second variable: ");
     scanf("%d", &var2);
 
+    printf("The value of var1 address is %p\n",&var1);
+    printf("The value of var2 address is %p\n",&var2);
+
     // Compare the addresses and display which address is larger
     if (&var1 > &var2) {
         printf("The address of the first variable (var1) is larger and its value is: %d\n", var1);
