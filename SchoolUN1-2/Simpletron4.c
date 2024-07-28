@@ -1,32 +1,29 @@
 #include <stdio.h>
 
-const int MEMORY_SIZE = 100;
-const int SENTINEL = -99999;
-const int MAX_VAL = 9999;
-const int MIN_VAL = -9999;
+// Definindo as constantes
+#define MEMORY_SIZE 100    // Tamanho da memória (número total de posições de memória)
+#define SENTINEL -99999     // Valor sentinela para terminar a entrada de dados
+#define MAX_VALUE 9999      // Valor máximo permitido para a memória
+#define MIN_VALUE -9999     // Valor mínimo permitido para a memória
 
-int memoria[MEMORY_SIZE];
-int acumulador = 0;           // Inicializado como +0000
-int contadorInstrucao = 0;    // Inicializado como 00
-int registroInstrucao = 0;    // Inicializado como +0000
-int codigoOperacao = 0;       // Inicializado como 00
-int operando = 0;             // Inicializado como 00
+// Registradores
+int memoria[MEMORY_SIZE];  // Array que representa a memória do Simpletron
+int acumulador = 0;        // Registrador do acumulador (armazena resultados intermediários)
+int contadorInstrucao = 0; // Registrador do contador de instruções (indica a posição da instrução a ser executada)
+int registroInstrucao = 0; // Registrador que armazena a instrução atual
+int codigoOperacao = 0;    // Código da operação extraído da instrução
+int operando = 0;          // Operando extraído da instrução
 
-void exibirEstado() {
+// Função auxiliar para imprimir o estado dos registradores e da memória
+void printEstado() {
     printf("REGISTRADORES:\n");
-    printf("acumulador        %+05d\n", acumulador);
-    printf("contadorInstrucao %02d\n", contadorInstrucao);
-    printf("registroInstrucao %+05d\n", registroInstrucao);
-    printf("codigoOperacao    %02d\n", codigoOperacao);
-    printf("operando          %02d\n", operando);
-    
-    printf("\nMEMÓRIA:\n");
-    printf("    ");
-    for (int i = 0; i < 10; i++) {
-        printf("  %2d  ", i);
-    }
-    printf("\n");
+    printf("acumulador         %+05d\n", acumulador);
+    printf("contadorInstrucao  %02d\n", contadorInstrucao);
+    printf("registroInstrucao  %+05d\n", registroInstrucao);
+    printf("codigoOperacao     %02d\n", codigoOperacao);
+    printf("operando           %02d\n", operando);
 
+    printf("\nMEMÓRIA:\n");
     for (int i = 0; i < MEMORY_SIZE; i++) {
         if (i % 10 == 0) {
             printf("%02d ", i);
@@ -39,48 +36,49 @@ void exibirEstado() {
     printf("\n");
 }
 
-int main() {
-    printf("*** Bem-vindo ao Simpletron! ***\n");
-    printf("*** Digite uma instrução ou dado por vez. ***\n");
-    printf("*** Use o número de 00 a 99 para a posição na memória. ***\n");
-    printf("*** Para finalizar, digite %d. ***\n", SENTINEL);
-
-    int pos = 0;
-    while (pos < MEMORY_SIZE) {
+// Função para carregar o programa na memória
+void carregarPrograma() {
+    int posicao = 0;
+    while (posicao < MEMORY_SIZE) {
         int entrada;
-        printf("%02d ? ", pos);
+        printf("%02d ? ", posicao);
         scanf("%d", &entrada);
-        
-        if (entrada == SENTINEL) {
-            break;
-        }
 
-        while (entrada < MIN_VAL || entrada > MAX_VAL) {
+        // Verifica se a entrada é o valor sentinela
+        if (entrada == SENTINEL) break;
+
+        // Verifica se a entrada está dentro do intervalo válido
+        while (entrada < MIN_VALUE || entrada > MAX_VALUE) {
             printf("Valor inválido. Tente novamente.\n");
-            printf("%02d ? ", pos);
+            printf("%02d ? ", posicao);
             scanf("%d", &entrada);
         }
-        
-        memoria[pos++] = entrada;
+
+        memoria[posicao++] = entrada; // Armazena a instrução na memória e avança para a próxima posição
     }
+}
 
-    printf("*** Carregamento completo ***\n");
-    printf("*** Iniciando execução ***\n");
-
+// Função para executar o programa
+void executarPrograma() {
     while (1) {
-        // Carrega a instrução atual e separa código de operação e operando
+        // Verifica se o contador de instrução está dentro dos limites da memória
+        if (contadorInstrucao < 0 || contadorInstrucao >= MEMORY_SIZE) {
+            printf("*** Erro: Contador de instrução fora dos limites da memória ***\n");
+            printEstado();
+            return;
+        }
+
+        // Busca e decodifica a instrução
         registroInstrucao = memoria[contadorInstrucao];
         codigoOperacao = registroInstrucao / 100;
         operando = registroInstrucao % 100;
 
-        contadorInstrucao++;
-        
-        // Executa a operação com base no código
+        // Executa a operação baseada no código da operação
         switch (codigoOperacao) {
             case 10: // READ
                 printf("? ");
                 scanf("%d", &memoria[operando]);
-                while (memoria[operando] < MIN_VAL || memoria[operando] > MAX_VAL) {
+                while (memoria[operando] < MIN_VALUE || memoria[operando] > MAX_VALUE) {
                     printf("Valor inválido. Tente novamente.\n? ");
                     scanf("%d", &memoria[operando]);
                 }
@@ -100,65 +98,99 @@ int main() {
 
             case 30: // ADD
                 acumulador += memoria[operando];
-                if (acumulador < MIN_VAL || acumulador > MAX_VAL) {
+                if (acumulador > MAX_VALUE) {
+                    acumulador = MAX_VALUE;
                     printf("*** Erro: Overflow do acumulador ***\n");
-                    exibirEstado();
-                    return -1;
+                    printEstado();
+                    return;
+                } else if (acumulador < MIN_VALUE) {
+                    acumulador = MIN_VALUE;
+                    printf("*** Erro: Underflow do acumulador ***\n");
+                    printEstado();
+                    return;
                 }
                 break;
 
             case 31: // SUBTRACT
                 acumulador -= memoria[operando];
-                if (acumulador < MIN_VAL || acumulador > MAX_VAL) {
+                if (acumulador > MAX_VALUE) {
+                    acumulador = MAX_VALUE;
                     printf("*** Erro: Overflow do acumulador ***\n");
-                    exibirEstado();
-                    return -1;
+                    printEstado();
+                    return;
+                } else if (acumulador < MIN_VALUE) {
+                    acumulador = MIN_VALUE;
+                    printf("*** Erro: Underflow do acumulador ***\n");
+                    printEstado();
+                    return;
                 }
                 break;
 
             case 32: // DIVIDE
                 if (memoria[operando] == 0) {
                     printf("*** Erro: Divisão por zero ***\n");
-                    exibirEstado();
-                    return -1;
+                    printEstado();
+                    return;
                 }
                 acumulador /= memoria[operando];
                 break;
 
             case 33: // MULTIPLY
                 acumulador *= memoria[operando];
-                if (acumulador < MIN_VAL || acumulador > MAX_VAL) {
+                if (acumulador > MAX_VALUE) {
+                    acumulador = MAX_VALUE;
                     printf("*** Erro: Overflow do acumulador ***\n");
-                    exibirEstado();
-                    return -1;
+                    printEstado();
+                    return;
+                } else if (acumulador < MIN_VALUE) {
+                    acumulador = MIN_VALUE;
+                    printf("*** Erro: Underflow do acumulador ***\n");
+                    printEstado();
+                    return;
                 }
                 break;
 
             case 40: // BRANCH
-                contadorInstrucao = operando;
+                contadorInstrucao = operando - 1; // Ajusta o contador de instrução para o próximo loop
                 break;
 
             case 41: // BRANCHNEG
-                if (acumulador < 0) {
-                    contadorInstrucao = operando;
-                }
+                if (acumulador < 0)
+                    contadorInstrucao = operando - 1; // Ajusta o contador de instrução para o próximo loop
                 break;
 
             case 42: // BRANCHZERO
-                if (acumulador == 0) {
-                    contadorInstrucao = operando;
-                }
+                if (acumulador == 0)
+                    contadorInstrucao = operando - 1; // Ajusta o contador de instrução para o próximo loop
                 break;
 
             case 43: // HALT
                 printf("*** Execução concluída ***\n");
-                exibirEstado();
-                return 0;
+                printEstado();
+                return;
 
             default:
                 printf("*** Erro: Código de operação inválido ***\n");
-                exibirEstado();
-                return -1;
+                printEstado();
+                return;
         }
+
+        // Incrementa o contador de instrução para a próxima iteração
+        contadorInstrucao++;
     }
+}
+
+int main() {
+    printf("*** Bem-vindo ao Simpletron! ***\n");
+    printf("*** Digite uma instrução ou dado por vez. ***\n");
+    printf("*** Use o número de 00 a 99 para a posição na memória. ***\n");
+    printf("*** Para finalizar, digite %d. ***\n", SENTINEL);
+
+    carregarPrograma();
+    printf("*** Carregamento completo ***\n");
+    printf("*** Iniciando execução ***\n");
+
+    executarPrograma();
+
+    return 0;
 }
