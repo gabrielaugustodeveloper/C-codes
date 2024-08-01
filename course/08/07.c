@@ -2,13 +2,13 @@
 
 // Enum
 enum days_of_week {
-    monday,
-    tuesday,
-    wednesday,
-    thursday,
-    friday,
-    saturday,
-    sunday
+    monday, // 0
+    tuesday, // 1
+    wednesday, // 2
+    thursday, // 3
+    friday, // 4
+    saturday, // 5
+    sunday // 6
 };
 
 int main() {
@@ -24,7 +24,7 @@ int main() {
 
     d1 = thursday;  
 
-    d2 = 4;  
+    d2 = 3;  
 
     if (d1 == d2) {
         printf("The days are equal\n");  
