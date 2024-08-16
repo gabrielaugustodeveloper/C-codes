@@ -2,7 +2,8 @@
     "files.associations": {
         "EX001.C": "cpp",
         "stdio.h": "c",
-        "01.C": "cpp"
+        "01.C": "cpp",
+        "02.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
