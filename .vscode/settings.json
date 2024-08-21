@@ -3,7 +3,9 @@
         "EX001.C": "cpp",
         "stdio.h": "c",
         "01.C": "cpp",
-        "02.C": "cpp"
+        "02.C": "cpp",
+        "03.C": "cpp",
+        "06.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
