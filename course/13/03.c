@@ -93,3 +93,4 @@ int main() {
 
     return 0;
 }
+// O código acima implementa um programa que simula uma pilha (stack) em C. A pilha é uma estrutura de dados que segue o princípio LIFO (Last In, First Out), onde o último elemento inserido é o primeiro a ser removido. O programa permite adicionar elementos (push), remover elementos (pop), listar os elementos atuais e limpar a pilha.
