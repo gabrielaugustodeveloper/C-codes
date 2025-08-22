@@ -5,7 +5,8 @@
         "01.C": "cpp",
         "02.C": "cpp",
         "03.C": "cpp",
-        "06.C": "cpp"
+        "06.C": "cpp",
+        "GAME.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
